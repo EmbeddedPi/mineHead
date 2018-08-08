@@ -3,7 +3,7 @@ main: mineHead.Main
 version: 0.1
 commands:
    headCalibrate:
-      description: Calibrates specified direction according to curren head position
+      description: Calibrates specified direction according to current head position
       usage: /headCalibrate [up/down/left/right/centre]
       permission: op
       permission-message: No you don't, your level of omnipotency is sadly lacking!
