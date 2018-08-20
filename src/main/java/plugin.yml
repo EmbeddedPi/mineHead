@@ -9,6 +9,6 @@ commands:
       permission-message: No you don't, your level of omnipotency is sadly lacking!
    headTracking:
       description: Starts head tracking, playername not required for stop
-      usage: /headTracking [start/stop] [playername] 
+      usage: /headTracking [start/stop]  
       permission: op
       permission-message: No you don't, you just aren't worthy!

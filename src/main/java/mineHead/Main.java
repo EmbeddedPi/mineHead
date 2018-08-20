@@ -17,7 +17,7 @@ public class Main extends JavaPlugin implements Listener {
 	//Usually false by default but set to true for testing purposes
 	private boolean running;
 	String calibrateName[] = {"left", "right", "up", "down", "middle"};
-	// Forces recalibration upon load (set to true fro testing)
+	// Forces recalibration upon load (set to true for testing)
 	Boolean calibrateStatus[] = {true, true, true, true, true};
 	//TODO Check what values types are returned by EV3
 	private float left;
@@ -29,13 +29,14 @@ public class Main extends JavaPlugin implements Listener {
 	private float valueFromEV3 = 666;
 	String newHeadStatus[] = {"",""};
 	String oldHeadStatus[] = {"",""};
-	private Player activePlayer = null;
+	private Player activePlayer;
 	
 	@Override
     public void onEnable() {
 		//Rest active player on reload
 		running = false;
-		activePlayer = null;
+		activePlayer = null;		
+		getServer().getPluginManager().registerEvents(this, this);
 		getLogger().info("mineHead has invoked onEnable"); 
     }
     
@@ -106,28 +107,40 @@ public class Main extends JavaPlugin implements Listener {
 	    	} else if (args.length >1) {
 	    		sender.sendMessage("Calm down, too many arguments!");
 	    		return false;
-	    	} else if (sender instanceof Player) {
+	    	} 
+    		getLogger().info("Calibrated and correct number of arguments, checking if player");
+    		if (sender instanceof Player) {
+	    		getLogger().info("Sent by a player, checking arguments");
 	    		//Sender is a player
 	    		if (args[0].equalsIgnoreCase("start")) {
-	    			if (!activePlayer.equals(null)) {
-	    				sender.sendMessage(activePlayer + "is already using this."); 
-	    				return false;
-	    			} else {
+	    			getLogger().info("Recognised start");
+	    			//if (activePlayer.isEmpty()) {
+	    			if (activePlayer == null) {	
+	    				getLogger().info("Attempting to start player");
 	    				activePlayer = (Player)sender;
 	    				running = true;
+	    				getLogger().info("Active player is " + activePlayer.getName());
+	    				sender.sendMessage("Headtracking started.");
 	    				return true;
+	    			} else {
+	    				sender.sendMessage(activePlayer.getName() + "is already using this."); 
+	    				return false;
 	    			}
 	    		} else if (args[0].equalsIgnoreCase("stop")) {
-	    			if (!activePlayer.equals(null)) {
-	    				sender.sendMessage("Already stopped."); 
+	    			getLogger().info("Recognised stop");
+	    			if (running == false) {
+	    				//getLogger().info("Already stopped."); 
+	    				sender.sendMessage("Already stopped.");
 	    				return false;
-	    			} else if (!activePlayer.equals(sender)) {
-	    				sender.sendMessage(activePlayer + "is already using this."); 
-	    				return false;
-	    			} else {
+	    			} else if (activePlayer == sender) {
+	    				getLogger().info("Stopping " + sender.getName()); 
 	    				activePlayer = null;
 	    				running = false;
+	    				sender.sendMessage("Stopping.");
 	    				return true;
+	    			} else {
+	    				sender.sendMessage(activePlayer.getName() + "is already using this."); 
+	    				return false;
 	    			}	    			
 	    		} else {
 	    			// Not a recognised argument
@@ -149,7 +162,7 @@ public class Main extends JavaPlugin implements Listener {
     
 // Detect head movement
     @EventHandler
-    private void onPlayerMoveEvent (final PlayerMoveEvent event) {
+    public void onPlayerMoveEvent (final PlayerMoveEvent event) {
     	//Check if calibrated and initialised
     	if (running) {
     		//TODO Change this to use getFrom() and getTo()
@@ -161,6 +174,8 @@ public class Main extends JavaPlugin implements Listener {
     			newHeadStatus[1] = df.format(playerLocation.getYaw());
     			if (newHeadStatus == oldHeadStatus) {
     				getLogger().info(currentPlayer + " has moved but head has not");
+    				currentPlayer.sendMessage("Pitch is " + newHeadStatus[0]);
+    				currentPlayer.sendMessage("Yaw is " + newHeadStatus[1]);
     			} else {
     				getLogger().info(currentPlayer + "moved their head\n" + "Pitch is " + newHeadStatus[0] + "\n Yaw is " + newHeadStatus[1]);
     			}
