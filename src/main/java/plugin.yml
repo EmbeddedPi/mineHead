@@ -3,12 +3,12 @@ main: mineHead.Main
 version: 0.1
 commands:
    headCalibrate:
-      description: Calibrates specified direction according to current head position
+      description: Calibrates specified direction
       usage: /headCalibrate [up/down/left/right/centre]
       permission: op
       permission-message: No you don't, your level of omnipotency is sadly lacking!
    headTracking:
-      description: Starts head tracking, playername not required for stop
+      description: Starts/stops tracking player head
       usage: /headTracking [start/stop]  
       permission: op
       permission-message: No you don't, you just aren't worthy!

@@ -169,8 +169,10 @@ public class Main extends JavaPlugin implements Listener {
     		Player currentPlayer = event.getPlayer();
     		Location playerLocation = currentPlayer.getLocation();
     		if (currentPlayer == activePlayer) {
-    			DecimalFormat df = new DecimalFormat("#.##");
+    			DecimalFormat df = new DecimalFormat("#.#");
+    			//Yaw 0/360 degrees is South, 180 is North, East is 270,West is 90
     			newHeadStatus[0] = df.format(playerLocation.getPitch());
+    			//Pitch -90 degrees is up, +90 degrees is down
     			newHeadStatus[1] = df.format(playerLocation.getYaw());
     			if (newHeadStatus == oldHeadStatus) {
     				getLogger().info(currentPlayer + " has moved but head has not");
