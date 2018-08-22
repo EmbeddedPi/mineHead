@@ -3,7 +3,7 @@ package mineHead;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import java.text.DecimalFormat;
+//import java.text.DecimalFormat;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -27,8 +27,6 @@ public class Main extends JavaPlugin implements Listener {
 	private float middle;
 	//Dummy variable to simulate value from EV3
 	private float valueFromEV3 = 666;
-	String newHeadStatus[] = {"",""};
-	String oldHeadStatus[] = {"",""};
 	private Player activePlayer;
 	
 	@Override
@@ -129,7 +127,6 @@ public class Main extends JavaPlugin implements Listener {
 	    		} else if (args[0].equalsIgnoreCase("stop")) {
 	    			getLogger().info("Recognised stop");
 	    			if (running == false) {
-	    				//getLogger().info("Already stopped."); 
 	    				sender.sendMessage("Already stopped.");
 	    				return false;
 	    			} else if (activePlayer == sender) {
@@ -166,26 +163,35 @@ public class Main extends JavaPlugin implements Listener {
     	//Check if calibrated and initialised
     	if (running) {
     		//TODO Change this to use getFrom() and getTo()
-    		Player currentPlayer = event.getPlayer();
-    		Location playerLocation = currentPlayer.getLocation();
+    		Player currentPlayer = event.getPlayer();  
+    		//Ignore if not initialised player
     		if (currentPlayer == activePlayer) {
-    			DecimalFormat df = new DecimalFormat("#.#");
+    			Location oldLocation = event.getFrom();
     			//Yaw 0/360 degrees is South, 180 is North, East is 270,West is 90
-    			newHeadStatus[0] = df.format(playerLocation.getPitch());
     			//Pitch -90 degrees is up, +90 degrees is down
-    			newHeadStatus[1] = df.format(playerLocation.getYaw());
-    			if (newHeadStatus == oldHeadStatus) {
-    				getLogger().info(currentPlayer + " has moved but head has not");
-    				currentPlayer.sendMessage("Pitch is " + newHeadStatus[0]);
-    				currentPlayer.sendMessage("Yaw is " + newHeadStatus[1]);
+        		float oldPitch = oldLocation.getPitch();
+        		float oldYaw  = oldLocation.getYaw();
+        		Location newLocation = event.getTo();
+        		float newPitch = newLocation.getPitch();
+        		float newYaw  = newLocation.getYaw();
+    			//DecimalFormat df = new DecimalFormat("#.#"); 
+        		//Ignore if head has not moved
+    			if (oldPitch == newPitch && oldYaw == newYaw) {
+    				currentPlayer.sendMessage(currentPlayer.getName() + " has moved but head has not");
+    			//Otherwise register head movement
     			} else {
-    				getLogger().info(currentPlayer + "moved their head\n" + "Pitch is " + newHeadStatus[0] + "\n Yaw is " + newHeadStatus[1]);
+    				//TODO Fix threshold and code subsequent actions
+    				currentPlayer.sendMessage("Old pitch is " + oldPitch + ", old yaw is " + oldYaw);
+            		currentPlayer.sendMessage("New pitch is " + newPitch + ", new yaw is " + newYaw);
     			}
-    			oldHeadStatus = newHeadStatus;
     		} else {
-    		getLogger().info("Not calibrated and/or initialised.");
+    			//Test line for debugging
+    			//getLogger().info("Not activated player.");
     		}
-    	}
+    	} else {	
+    		//Test line for debugging
+        	//getLogger().info("Not calibrated and/or initialised.");
+        }
     }
     
 //Test if head is calibrated before initialising, indicate status if not 
