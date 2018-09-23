@@ -138,13 +138,18 @@ public class Main extends JavaPlugin implements Listener {
 	    			} else {
 	    				sender.sendMessage(activePlayer.getName() + "is already using this."); 
 	    				return false;
-	    			}	    			
-	    		} else {
-	    			// Not a recognised argument
-	    			sender.sendMessage("Not a recognised argument");
-	    			sender.sendMessage("Command should be in the format headTracking [start/stop]");
-	    			return false;
-	    		}
+	    			}
+	    	} else if (cmd.getName().equalsIgnoreCase("beepbeep")) {
+	        	getLogger().info("I've recognised a beepbeep command");
+	        	//Don't bother checking arguments, don't need any, not worth it
+	        	getLogger().info("Get beeping"); 
+	        	return true;
+	    	} else {
+	    		// Not a recognised argument
+	    		sender.sendMessage("Not a recognised argument");
+	    		sender.sendMessage("Command should be in the format headTracking [start/stop]");
+	    		return false;
+	    	}
 	    	} else {    
 	    		// Must have come from some other entity
     			sender.sendMessage("Not a player that sent this request, ignoring");
@@ -155,7 +160,7 @@ public class Main extends JavaPlugin implements Listener {
     		sender.sendMessage("This is not a recognised command");
 			return false; 
     	}  
-    }
+    		}
     
 // Detect head movement
     @EventHandler
