@@ -12,8 +12,8 @@ commands:
       usage: /headTracking [start/stop]  
       permission: op
       permission-message: No you don't, you just aren't worthy!
-   beepbeep:
-      description: Plays beep beep I'm a sheep
-      usage: /beepbeep
+   disco:
+      description: Plays a light display
+      usage: /disco
       permission: op
       permission-message: Just forget it

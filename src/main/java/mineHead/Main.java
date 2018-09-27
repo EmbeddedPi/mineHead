@@ -35,12 +35,12 @@ public class Main extends JavaPlugin implements Listener {
 		running = false;
 		activePlayer = null;		
 		getServer().getPluginManager().registerEvents(this, this);
-		getLogger().info("mineHead has invoked onEnable"); 
+		getLogger().info("[mineHead]mineHead has invoked onEnable"); 
     }
     
     @Override
     public void onDisable() {
-    	getLogger().info("mineHead has invoked onDisable"); 
+    	getLogger().info("[mineHead]mineHead has invoked onDisable"); 
     }
     
     @Override
@@ -81,7 +81,7 @@ public class Main extends JavaPlugin implements Listener {
     	    			down = valueFromEV3;
     	    			return true;
     	    			//break;
-    	    		case "middle": 	
+    	    		case "centre": 	
     	    			calibrateStatus[4] = true;
     	    			//Store middle data
     	    			middle = valueFromEV3;
@@ -139,28 +139,34 @@ public class Main extends JavaPlugin implements Listener {
 	    				sender.sendMessage(activePlayer.getName() + "is already using this."); 
 	    				return false;
 	    			}
-	    	} else if (cmd.getName().equalsIgnoreCase("beepbeep")) {
-	        	getLogger().info("I've recognised a beepbeep command");
-	        	//Don't bother checking arguments, don't need any, not worth it
-	        	getLogger().info("Get beeping"); 
-	        	return true;
-	    	} else {
-	    		// Not a recognised argument
-	    		sender.sendMessage("Not a recognised argument");
-	    		sender.sendMessage("Command should be in the format headTracking [start/stop]");
-	    		return false;
-	    	}
-	    	} else {    
+	    		} else {
+		    		// Not a recognised argument
+		    		sender.sendMessage("Not a recognised argument");
+		    		sender.sendMessage("Command should be in the format headTracking [start/stop]");
+		    		return false;
+		    	}
+    		} else {    
 	    		// Must have come from some other entity
     			sender.sendMessage("Not a player that sent this request, ignoring");
     			return false;
 	    	}  
+	    } else if (cmd.getName().equalsIgnoreCase("disco")) {
+	        	getLogger().info("[mineHead]I've recognised a disco command");
+	        	//Don't bother checking arguments, don't need any, not worth it
+	        	try {
+					Interface.disco();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	        	getLogger().info("[mineHead]We just wanted you to get down"); 
+	        	return true;
     	} else {    
     		// Otherwise not a recognised command
     		sender.sendMessage("This is not a recognised command");
 			return false; 
     	}  
-    		}
+    }
     
 // Detect head movement
     @EventHandler
