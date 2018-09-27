@@ -27,6 +27,11 @@ public class EV3 {
 	static final byte  opTimer_Ready 			= (byte)  0x86;
 	static final byte  opSound 					= (byte)  0x94; 
 	static final byte  opSound_Ready 			= (byte)  0x96;
+	static final byte  opOutput_Stop 			= (byte)  0xA3;
+	static final byte  opOutput_Power 			= (byte)  0xA4;
+	static final byte  opOutput_Speed 			= (byte)  0xA5;
+	static final byte  opOutput_Start 			= (byte)  0xA6;
+	static final byte  opOutput_Polarity 		= (byte)  0xA7;
 	static final byte  opFile 					= (byte)  0xC0;
 	static final byte  opCom_Set 				= (byte)  0xD4;
  

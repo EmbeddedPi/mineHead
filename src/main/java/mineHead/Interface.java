@@ -103,6 +103,16 @@ public class Interface {
 		myEV3.verbosity = false;
 		myEV3.sync_mode = EV3.ASYNC;
 		System.out.print("[mineHead][Interface]Constructed EV3 object");
+		ByteBuffer ops = ByteBuffer.allocateDirect(8);
+		//Start all at full blast
+		ops.put(EV3.opOutput_Power);
+		ops.put(EV3.LCX(0));		// LAYER
+		ops.put(EV3.LCX(15)); 		// NOS ALL MOTORS
+		ops.put(EV3.LCX(100));		// POWER
+		ops.put(EV3.opOutput_Start);        
+		ops.put(EV3.LCX(0));        // LAYER
+		ops.put(EV3.LCX(15)); 		// NOS ALL MOTORS
+				myEV3.main(ops);
 		myEV3.setLED(EV3.LED_RED);
 		Thread.sleep(250);
 		myEV3.setLED(EV3.LED_GREEN);
@@ -122,6 +132,13 @@ public class Interface {
 		myEV3.setLED(EV3.LED_ORANGE_PULSE);
 		Thread.sleep(500);
 		myEV3.setLED(EV3.LED_OFF);
+		ByteBuffer ops2 = ByteBuffer.allocateDirect(4);
+		//Stop all
+		ops2.put(EV3.opOutput_Stop);
+		ops2.put(EV3.LCX(0));		// LAYER
+		ops2.put(EV3.LCX(15)); 		// NOS ALL MOTORS
+		ops2.put(EV3.LCX(0));		// FLOAT BRAKE
+		myEV3.main(ops2);
 	}
 	
 	@SuppressWarnings("unused")
