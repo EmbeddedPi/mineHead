@@ -17,3 +17,8 @@ commands:
       usage: /disco
       permission: op
       permission-message: Just forget it
+   headThreshold:
+      description: Sets the movement threshold for Steve (default 5 degrees, min 1, max 20)
+      usage: /headThreshold [degrees]
+      permission: op
+      permission-message: Nay chance

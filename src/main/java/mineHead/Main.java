@@ -28,6 +28,10 @@ public class Main extends JavaPlugin implements Listener {
 	//Dummy variable to simulate value from EV3
 	private float valueFromEV3 = 666;
 	private Player activePlayer;
+	private int threshold = 5;
+	float oldPitch;
+	float oldYaw;
+	private boolean hasMoved = false;
 	
 	@Override
     public void onEnable() {
@@ -161,6 +165,28 @@ public class Main extends JavaPlugin implements Listener {
 				}
 	        	getLogger().info("[mineHead]We just wanted you to get down"); 
 	        	return true;
+	    } else if (cmd.getName().equalsIgnoreCase("headThreshold")) { 
+    		getLogger().info("I've recognised a headThreshold command");
+    		if (args.length < 1) {
+    	        sender.sendMessage("This command is angry, it needs an argument!");
+    	        return false;
+    	    } else if (args.length >1) {
+    	        sender.sendMessage("Calm down, too many arguments!");
+    	        return false;
+    	    } else if (isInteger(args[0])){  
+    	    	int tempThreshold = Integer.parseInt( args[0] );
+    	    	if (tempThreshold < 1 || tempThreshold > 20) {
+    	    		sender.sendMessage(tempThreshold + " is out of the valid range of 1~20.");
+    	    		return false;  
+    	    	} else {
+    	    		sender.sendMessage("Threshold successfully set to " + tempThreshold);
+    	    		threshold = tempThreshold;
+    	    		return true;
+    	    	}
+    	    } else {
+    	    		sender.sendMessage(args[0] + " is not a valid argument.");
+    	    		return false;  
+    	    }
     	} else {    
     		// Otherwise not a recognised command
     		sender.sendMessage("This is not a recognised command");
@@ -177,23 +203,32 @@ public class Main extends JavaPlugin implements Listener {
     		Player currentPlayer = event.getPlayer();  
     		//Ignore if not initialised player
     		if (currentPlayer == activePlayer) {
-    			Location oldLocation = event.getFrom();
-    			//Yaw 0/360 degrees is South, 180 is North, East is 270,West is 90
-    			//Pitch -90 degrees is up, +90 degrees is down
-        		float oldPitch = oldLocation.getPitch();
-        		float oldYaw  = oldLocation.getYaw();
+        		if (!hasMoved) {
+        			//Handle case where this is first movement
+        			Location oldLocation = event.getFrom();
+        			//Yaw 0/360 degrees is South, 180 is North, East is 270,West is 90
+        			//Pitch -90 degrees is up, +90 degrees is down
+            		oldPitch = oldLocation.getPitch();
+            		oldYaw  = oldLocation.getYaw();
+            		hasMoved = true;
+        		} 
+        		//else ignore oldLocation
         		Location newLocation = event.getTo();
         		float newPitch = newLocation.getPitch();
         		float newYaw  = newLocation.getYaw();
-    			//DecimalFormat df = new DecimalFormat("#.#"); 
         		//Ignore if head has not moved
     			if (oldPitch == newPitch && oldYaw == newYaw) {
     				currentPlayer.sendMessage(currentPlayer.getName() + " has moved but head has not");
     			//Otherwise register head movement
-    			} else {
-    				//TODO Fix threshold and code subsequent actions
+    			} else if (Math.abs(oldPitch - newPitch) > threshold || Math.abs(oldYaw - newYaw) > threshold) {
     				currentPlayer.sendMessage("Old pitch is " + oldPitch + ", old yaw is " + oldYaw);
             		currentPlayer.sendMessage("New pitch is " + newPitch + ", new yaw is " + newYaw);
+    				//TODO Code subsequent actions
+            		currentPlayer.sendMessage("Perform action based on movement");
+            		oldPitch = newPitch;
+            		oldYaw = newYaw;currentPlayer.sendMessage("Movement below threshold level for change, ignoring");
+    			} else {
+    				//currentPlayer.sendMessage("Movement below threshold level for change, ignoring");
     			}
     		} else {
     			//Test line for debugging
@@ -223,5 +258,28 @@ public class Main extends JavaPlugin implements Listener {
     		sender.sendMessage(returnStatus);
     		return false;
     	}	
+    }
+    
+    private static boolean isInteger(String str) {
+        if (str == null) {
+            return false;
+        }
+        if (str.isEmpty()) {
+            return false;
+        }
+        int i = 0;
+        if (str.charAt(0) == '-') {
+            if (str.length() == 1) {
+                return false;
+            }
+            i = 1;
+        }
+        for (; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c < '0' || c > '9') {
+                return false;
+            }
+        }
+        return true;
     }
 }
